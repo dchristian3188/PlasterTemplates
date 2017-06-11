@@ -12,7 +12,7 @@ Describe PlasterTemplates {
         $moduleData.PrivateData.PSData.Extensions.Module -contains 'Plaster' | Should be $true
     }
 
-    ForEach($templatePath in $moduleData.PrivateData.PSData.Extensions.details.TemplatePaths)
+    ForEach($templatePath in $moduleData.PrivateData.PSData.Extensions.Details.TemplatePaths)
     {
         $manifestPath = [System.IO.Path]::Combine($moduleRoot,$templatePath,"PlasterManifest.Xml")
 

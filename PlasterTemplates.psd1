@@ -9,8 +9,8 @@
         PSData = @{
             Extensions = @{
                 Module  = 'Plaster'
-                details = @{
-                    TemplatePaths = @('function', 'module')
+                Details = @{
+                    TemplatePaths = @('Function', 'Module')
                 }
             }
         }
