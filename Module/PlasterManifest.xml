@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<plasterManifest 
+  xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1" schemaVersion="1.0">
+  <metadata>
+    <name>ModuleTemplate</name>
+    <id>c52745e2-3641-4657-bd99-18374a490585</id>
+    <version>0.0.1</version>
+    <title>DC Custom Module Template</title>
+    <description>Plaster template to create a module"</description>
+    <author>David Christian</author>
+    <tags />
+  </metadata>
+  <parameters>
+    <parameter name="ModuleAuthor" type="user-fullname" prompt="Author"/>
+    <parameter name="ModuleName" type="text" prompt="Name of your module" />
+    <parameter name="ModuleVersion" type="text" prompt="Version number"  default='0.0.0.1' />
+    <parameter name="ModuleDesc" type="text" prompt="Brief description on this module" />
+    <parameter name="FunctionFolders" type="multichoice" prompt="Please select folders to include" default='0,1,2'>
+      <choice label="&amp;Public" help="Adds a public folder to module root" value="Public" />
+      <choice label="&amp;Internal" help="Adds a internal folder to module root" value="Internal" />
+      <choice label="&amp;Classes" help="Adds a classes folder to module root" value="Classes" />
+      <choice label="&amp;Binaries" help="Adds a binaries folder to module root" value="Binaries" />
+      <choice label="&amp;Data" help="Adds a data folder to module root" value="Data" />
+    </parameter>
+    <parameter name="Pester" type="choice" prompt="Include Pester Tests?" default='0'>
+      <choice label="&amp;Yes" help="Adds a pester folder" value="Yes" />
+      <choice label="&amp;No" help="Does not add a pester folder" value="No" />
+    </parameter>
+  </parameters>
+  <content>
+    <newModuleManifest destination='${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_ModuleVersion' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='$PLASTER_PARAM_ModuleAuthor' description='$PLASTER_PARAM_ModuleDesc'/>
+    <file source='template.psm1' destination='${PLASTER_PARAM_ModuleName}.psm1'/>
+    <message> Creating you folders for module: $PLASTER_PARAM_ModuleName </message>
+    <file condition='$PLASTER_PARAM_FunctionFolders -contains "Public"' destination='Public\' source='' />
+    <file condition='$PLASTER_PARAM_FunctionFolders -contains "Internal"' destination='Internal\' source='' />
+    <file condition='$PLASTER_PARAM_FunctionFolders -contains "Classes"' destination='Classes\' source='' />
+    <file condition='$PLASTER_PARAM_FunctionFolders -contains "Binaries"' destination='Binaries\' source='' />
+    <file condition='$PLASTER_PARAM_FunctionFolders -contains "Data"' destination='Data\' source='' />
+    <message condition='$PLASTER_PARAM_Pester -eq "Yes"'>Creating a Tests folder </message>
+    <file condition='$PLASTER_PARAM_Pester -eq "Yes"' destination='Tests\' source='' />
+    <file condition='$PLASTER_PARAM_Pester -eq "Yes"' destination='Tests\${PLASTER_PARAM_ModuleName}.tests.ps1' source='basicTest.ps1' />
+  </content>
+</plasterManifest>

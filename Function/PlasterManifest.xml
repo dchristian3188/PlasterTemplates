@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<plasterManifest 
+  xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1" schemaVersion="1.0">
+  <metadata>
+    <name>FunctionTemplate</name>
+    <id>c0b57946d-f52f-4168-b152-4fdb334b9fca</id>
+    <version>0.0.1</version>
+    <title>DC Custom Function Template</title>
+    <description>Plaster template to create an advanced function with tests.</description>
+    <author>David Christian</author>
+    <tags />
+  </metadata>
+  <parameters>
+    <parameter name="FunctionName" type="text" prompt="Name of your Function" />
+    <parameter name="Help" type="choice" prompt="Include Comment Based Help?" default='0'>
+      <choice label="&amp;Yes" help="Adds comment based help" value="Yes" />
+      <choice label="&amp;No" help="Does not add comment based help" value="No" />
+    </parameter>
+    <parameter name="PipelineSupport" type="choice" prompt="Include Begin Process End blocks?" default='0'>
+      <choice label="&amp;Yes" help="Adds a pester folder" value="Yes" />
+      <choice label="&amp;No" help="Does not add a pester folder" value="No" />
+    </parameter>
+    <parameter name="CmdletBinding" type="choice" prompt="Simple cmdlet binding or Advanced?" default='0'>
+      <choice label="&amp;simple" help="Adds an empty cmdlet binding block" value="Simple" />
+      <choice label="&amp;Advanced" help="Adds all options to cmdlet binding" value="Advanced" />
+    </parameter>
+    <parameter name="ComputerName" type="choice" prompt="Add a paramater for computername" default='0'>
+      <choice label="&amp;Yes" help="Adds a default parameter for computername" value="Yes" />
+      <choice label="&amp;No" help="Does not include computername parameter" value="No" />
+    </parameter>
+  </parameters>
+  <content>
+    <templateFile source='functionTemplate.ps1' destination='${PLASTER_PARAM_FunctionName}.ps1'/>
+    <templateFile source='testsTemplate.ps1' destination='${PLASTER_PARAM_FunctionName}.tests.ps1'/>
+  </content>
+</plasterManifest>
