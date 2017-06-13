@@ -17,7 +17,7 @@
       <choice label="&amp;No" help="Does not add comment based help" value="No" />
     </parameter>
     <parameter name="PipelineSupport" type="choice" prompt="Include Begin Process End blocks?" default='0'>
-      <choice label="&amp;Yes" help="Adds a pester folder" value="Yes" />
+      <choice label="&amp;Yes" help="Adds pipeline support to the function" value="Yes" />
       <choice label="&amp;No" help="Does not add a pester folder" value="No" />
     </parameter>
     <parameter name="CmdletBinding" type="choice" prompt="Simple cmdlet binding or Advanced?" default='0'>
