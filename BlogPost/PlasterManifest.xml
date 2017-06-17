@@ -1,0 +1,18 @@
+﻿<plasterManifest 
+  xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1" schemaVersion="1.0">
+  <metadata>
+    <name>BlogPost</name>
+    <id>c66f23d4-5e74-4606-b194-f2c5d4db9a19</id>
+    <version>0.0.1</version>
+    <title>Blog Post</title>
+    <description>Creates a new blog post draft for OverPoweredShell.com</description>
+    <author>David Christian</author>
+    <tags></tags>
+  </metadata>
+  <parameters>
+    <parameter name='PostTitle' type = 'text' prompt='Title of your new post' />
+  </parameters>
+  <content>
+    <templateFile source='blogPost.md' destination='${PLASTER_PARAM_PostTitle}.md'/>
+  </content>
+</plasterManifest>
