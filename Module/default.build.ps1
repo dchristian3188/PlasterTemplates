@@ -91,9 +91,11 @@ task Pester {
 }
 
 task GenerateGraph -if (Test-Path -Path 'Graphs') {
-    $graphPath = Join-Path -Path $(Split-Path -Path $script:PsmPath) -ChildPath "ModuleFlow.png"
-    .\Graphs\MethodFlow.ps1 -OutputPath $graphPath  -Quiet > $null
-
-     $graphPath = Join-Path -Path $(Split-Path -Path $script:PsmPath) -ChildPath "PropertyFlow.png"
-     .\Graphs\PropertyFlow.ps1 -OutputPath $graphPath -Quiet -CompiledModule $script:PsmPath > $null
+    $Graphs = Get-ChildItem -Path "Graphs\*"
+   
+    Foreach($graph in $Graphs)
+    {
+        $graphLocation = [IO.Path]::Combine($script:OutPutFolder,$script:ModuleName,"$($graph.BaseName).png")
+        . $graph.FullName -DestinationPath $graphLocation -Hide
+    }
 }

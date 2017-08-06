@@ -3,7 +3,7 @@
     xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1" schemaVersion="1.0">
     <metadata>
         <name>ModuleTemplate</name>
-        <id>824451ba-6ec7-4895-bab6-16767faeb522</id>
+        <id>6fa537be-5f3b-42f8-bbba-2a263e0c4e53</id>
         <version>1.0.0</version>
         <title>DC Custom Module Template</title>
         <description>Plaster template to create a module</description>
@@ -45,6 +45,12 @@
             <choice label='&amp;No' value='No' help='Does not include any invoke build scripts'
 />
         </parameter>
+        <parameter name='Graphiz' type = 'choice' prompt='Include Grphiz' default='0'>
+            <choice label='&amp;Yes' value='Yes' help='Adds a graphiz diagram'
+/>
+            <choice label='&amp;No' value='No' help='Does not add graphiz support'
+/>
+        </parameter>
     </parameters>
     <content>
         <newModuleManifest destination='${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_ModuleVersion' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='$PLASTER_PARAM_ModuleAuthor' description='$PLASTER_PARAM_ModuleDesc'
@@ -74,6 +80,12 @@
         <file source='default.build.ps1' destination='${PLASTER_PARAM_ModuleName}.build.ps1' condition='$PLASTER_PARAM_InvokeBuild -eq "Yes"'
 />
         <requireModule name="InvokeBuild" condition='$PLASTER_PARAM_InvokeBuild -eq "Yes"'
+/>
+        <requireModule name="PSGraph" condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
+/>
+        <file source='' destination='Graphs' condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
+/>
+        <file source='CommandFlow.ps1' destination='Graphs\CommandFlow.ps1' condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
 />
     </content>
 </plasterManifest>
