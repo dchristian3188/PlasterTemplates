@@ -1,6 +1,6 @@
 task . Clean, Build, Tests, GenerateGraph
 task Tests ImportCompipledModule, Pester
-task CreateManifest copyPSD, UpdateDSCResourceToExport
+task CreateManifest copyPSD,UpdatPublicFunctionsToExport, UpdateDSCResourceToExport
 task Build Compile, CreateManifest
 
 
@@ -10,6 +10,7 @@ $script:OutPutFolder = "$PSScriptRoot\Output"
 $script:ImportFolders = @('Public', 'Internal', 'Classes', 'DSCResources')
 $script:PsmPath = Join-Path -Path $PSScriptRoot -ChildPath "Output\$($script:ModuleName)\$($script:ModuleName).psm1"
 $script:PsdPath = Join-Path -Path $PSScriptRoot -ChildPath "Output\$($script:ModuleName)\$($script:ModuleName).psd1"
+$script:PublicFolder = 'Public'
 $script:DSCResourceFolder = 'DSCResources'
 
 
@@ -66,6 +67,16 @@ task CopyPSD {
         Force       = $true
     }
     Copy-Item @copy
+}
+
+task UpdatPublicFunctionsToExport -if (Test-Path -Path $script:PublicFolder) {
+    $publicFunctions = (Get-ChildItem -Path $script:PublicFolder |
+            Select-Object -ExpandProperty BaseName) -join "', '"
+
+    $publicFunctions = "FunctionsToExport = @('{0}')" -f $publicFunctions
+
+    (Get-Content -Path $script:PsdPath) -replace "FunctionsToExport = '\*'", $publicFunctions |
+        Set-Content -Path $script:PsdPath
 }
 
 task UpdateDSCResourceToExport -if (Test-Path -Path $script:DSCResourceFolder) {
