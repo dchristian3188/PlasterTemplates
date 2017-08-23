@@ -5,10 +5,17 @@
         $buildParams += "Tests"
     }
 
-    if ($PLASTER_PARAM_Graphiz -eq "Yes")
+    if ($PLASTER_PARAM_PlatyPS -eq "Yes")
+    {
+        $buildParams += "ExportHelp"
+    }
+
+    if ($PLASTER_PARAM_PSGraph -eq "Yes")
     {
         $buildParams += "GenerateGraph"
     }
+
+    $buildParams += "Stats"
 
     $buildParams -join ", "
 %>
@@ -21,14 +28,46 @@
 %>
 task CreateManifest copyPSD,UpdatPublicFunctionsToExport, UpdateDSCResourceToExport
 task Build Compile, CreateManifest
-
+task Stats RemoveStats, WriteStats
 
 $script:ModuleName = Split-Path -Path $PSScriptRoot -Leaf
 $script:ModuleRoot = $PSScriptRoot
 $script:OutPutFolder = "$PSScriptRoot\Output"
-$script:ImportFolders = @('Public', 'Internal', 'Classes', 'DSCResources')
+<%
+    $folders = @()
+    if ($PLASTER_PARAM_FunctionFolders -contains 'Public')
+    {
+        $folders += "'Public'"
+    }
+
+    if ($PLASTER_PARAM_FunctionFolders -contains 'Internal')
+    {
+        $folders += "'Internal'"
+    }
+
+    if ($PLASTER_PARAM_FunctionFolders -contains 'Classes')
+    {
+        $folders += "'Classes'"
+    }
+
+    if ($PLASTER_PARAM_FunctionFolders -contains 'DSCResources')
+    {
+        $folders += "'DSCResources'"
+    }
+
+    $importfolders = $folders -join ", "
+    
+    '$script:ImportFolders = @({0})' -f $importfolders
+%>
 $script:PsmPath = Join-Path -Path $PSScriptRoot -ChildPath "Output\$($script:ModuleName)\$($script:ModuleName).psm1"
 $script:PsdPath = Join-Path -Path $PSScriptRoot -ChildPath "Output\$($script:ModuleName)\$($script:ModuleName).psd1"
+<%
+    if ($PLASTER_PARAM_PlatyPS -eq "Yes")
+    {
+        '$script:HelpPath = Join-Path -Path $PSScriptRoot -ChildPath "Output\$($script:ModuleName)\en-US"'
+    }
+%>
+
 $script:PublicFolder = 'Public'
 $script:DSCResourceFolder = 'DSCResources'
 
@@ -80,10 +119,12 @@ task Compile @compileParams {
 }
 
 task CopyPSD {
+    New-Item -Path (Split-Path $script:PsdPath) -ItemType Directory -ErrorAction 0
     $copy = @{
         Path        = "$($script:ModuleName).psd1"
         Destination = $script:PsdPath
         Force       = $true
+        Verbose  = $true
     }
     Copy-Item @copy
 }
@@ -108,32 +149,49 @@ task UpdateDSCResourceToExport -if (Test-Path -Path $script:DSCResourceFolder) {
         Set-Content -Path $script:PsdPath
 }
 
-task ImportCompipledModule {
+task ImportCompipledModule -if (Test-Path -Path $script:PsmPath) {
     Get-Module -Name $script:ModuleName |
         Remove-Module -Force
     Import-Module -Name $script:PsdPath -Force
 }
 
-<%
-
-    if ($PLASTER_PARAM_Pester -eq "Yes")
-    {
-        @'
 task Pester {
     $resultFile = "{0}\testResults{1}.xml" -f $script:OutPutFolder, (Get-date -Format 'yyyyMMdd_hhmmss')
     $testFolder = Join-Path -Path $PSScriptRoot -ChildPath 'Tests\*'
     Invoke-Pester -Path $testFolder -OutputFile $resultFile -OutputFormat NUnitxml
 }
-'@
-    }
-%>
 
 task GenerateGraph -if (Test-Path -Path 'Graphs') {
     $Graphs = Get-ChildItem -Path "Graphs\*"
    
-    Foreach($graph in $Graphs)
+    Foreach ($graph in $Graphs)
     {
-        $graphLocation = [IO.Path]::Combine($script:OutPutFolder,$script:ModuleName,"$($graph.BaseName).png")
+        $graphLocation = [IO.Path]::Combine($script:OutPutFolder, $script:ModuleName, "$($graph.BaseName).png")
         . $graph.FullName -DestinationPath $graphLocation -Hide
     }
+}
+
+task RemoveStats -if (Test-Path -Path "$($script:OutPutFolder)\stats.json") {
+    Remove-Item -Force -Verbose -Path "$($script:OutPutFolder)\stats.json" 
+}
+
+task WriteStats {
+    $folders = Get-ChildItem -Directory | 
+        Where-Object {$PSItem.Name -ne 'Output'}
+    
+    $stats = foreach ($folder in $folders)
+    {
+        $files = Get-ChildItem "$($folder.FullName)\*" -File
+        if($files)
+        {
+            Get-Content -Path $files | 
+            Measure-Object -Word -Line -Character | 
+            Select-Object -Property @{N = "FolderName"; E = {$folder.Name}}, Words, Lines, Characters
+        }
+    }
+    $stats | ConvertTo-Json > "$script:OutPutFolder\stats.json"
+}
+
+task ExportHelp -if (Test-Path -Path "$script:ModuleRoot\Help") {
+    New-ExternalHelp -Path "$script:ModuleRoot\Help" -OutputPath $script:HelpPath
 }
