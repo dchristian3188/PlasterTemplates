@@ -1,91 +1,91 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <plasterManifest 
-    xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1" schemaVersion="1.0">
-    <metadata>
-        <name>ModuleTemplate</name>
-        <id>6fa537be-5f3b-42f8-bbba-2a263e0c4e53</id>
-        <version>1.0.0</version>
-        <title>DC Custom Module Template</title>
-        <description>Plaster template to create a module</description>
-        <author>David Christian</author>
-        <tags></tags>
-    </metadata>
-    <parameters>
-        <parameter name='ModuleAuthor' type = 'user-fullname' prompt='Author' />
-        <parameter name='ModuleName' type = 'text' prompt='Name of your module' />
-        <parameter name='ModuleVersion' type = 'text' prompt='Version Number' default='0.0.0.1' />
-        <parameter name='ModuleDesc' type = 'text' prompt='Brief Description of your module' />
-        <parameter name='FunctionFolders' type = 'multichoice' prompt='Please select folders to include' default='0,1,2'>
-            <choice label='&amp;Public' value='Public' help='Adds a public folder to module root'
+        xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1" schemaVersion="1.0">
+        <metadata>
+                <name>ModuleTemplate</name>
+                <id>d316ffcc-c0a2-45fa-8710-ffceb3db7f97</id>
+                <version>1.0.0</version>
+                <title>DC Custom Module Template</title>
+                <description>Plaster template to create a module</description>
+                <author>David Christian</author>
+                <tags></tags>
+        </metadata>
+        <parameters>
+                <parameter name='ModuleAuthor' type = 'user-fullname' prompt='Author' />
+                <parameter name='ModuleName' type = 'text' prompt='Name of your module' />
+                <parameter name='ModuleVersion' type = 'text' prompt='Version Number' default='0.0.0.1' />
+                <parameter name='ModuleDesc' type = 'text' prompt='Brief Description of your module' />
+                <parameter name='FunctionFolders' type = 'multichoice' prompt='Please select folders to include' default='0,1,2'>
+                        <choice label='&amp;Public' value='Public' help='Adds a public folder to module root'
 />
-            <choice label='&amp;Internal' value='Internal' help='Adds a internal folder to module root'
+                        <choice label='&amp;Internal' value='Internal' help='Adds a internal folder to module root'
 />
-            <choice label='&amp;Classes' value='Classes' help='Adds a classes folder to module root'
+                        <choice label='&amp;Classes' value='Classes' help='Adds a classes folder to module root'
 />
-            <choice label='&amp;Binaries' value='Binaries' help='Adds a binaries folder to module root'
+                        <choice label='&amp;Binaries' value='Binaries' help='Adds a binaries folder to module root'
 />
-            <choice label='&amp;Data' value='Data' help='Adds a data folder to module root'
+                        <choice label='&amp;Data' value='Data' help='Adds a data folder to module root'
 />
-        </parameter>
-        <parameter name='Pester' type = 'choice' prompt='Include Pester Tests?' default='0'>
-            <choice label='&amp;Yes' value='Yes' help='Adds a tests folder'
+                </parameter>
+                <parameter name='Pester' type = 'choice' prompt='Include Pester Tests?' default='0'>
+                        <choice label='&amp;Yes' value='Yes' help='Adds a tests folder'
 />
-            <choice label='&amp;No' value='No' help='Does not add a tests folder'
+                        <choice label='&amp;No' value='No' help='Does not add a tests folder'
 />
-        </parameter>
-        <parameter name='Git' type = 'choice' prompt='Include GIt Support?' default='0'>
-            <choice label='&amp;Yes' value='Yes' help='Includes Git files'
+                </parameter>
+                <parameter name='Git' type = 'choice' prompt='Include GIt Support?' default='0'>
+                        <choice label='&amp;Yes' value='Yes' help='Includes Git files'
 />
-            <choice label='&amp;No' value='No' help='Does not include git files'
+                        <choice label='&amp;No' value='No' help='Does not include git files'
 />
-        </parameter>
-        <parameter name='InvokeBuild' type = 'choice' prompt='Include InvokeBuild Script' default='0'>
-            <choice label='&amp;Yes' value='Yes' help='Adds an invoke build script at the root of module'
+                </parameter>
+                <parameter name='InvokeBuild' type = 'choice' prompt='Include InvokeBuild Script' default='0'>
+                        <choice label='&amp;Yes' value='Yes' help='Adds an invoke build script at the root of module'
 />
-            <choice label='&amp;No' value='No' help='Does not include any invoke build scripts'
+                        <choice label='&amp;No' value='No' help='Does not include any invoke build scripts'
 />
-        </parameter>
-        <parameter name='Graphiz' type = 'choice' prompt='Include Grphiz' default='0'>
-            <choice label='&amp;Yes' value='Yes' help='Adds a graphiz diagram'
+                </parameter>
+                <parameter name='Graphiz' type = 'choice' prompt='Include Grphiz' default='0'>
+                        <choice label='&amp;Yes' value='Yes' help='Adds a graphiz diagram'
 />
-            <choice label='&amp;No' value='No' help='Does not add graphiz support'
+                        <choice label='&amp;No' value='No' help='Does not add graphiz support'
 />
-        </parameter>
-    </parameters>
-    <content>
-        <newModuleManifest destination='${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_ModuleVersion' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='$PLASTER_PARAM_ModuleAuthor' description='$PLASTER_PARAM_ModuleDesc'
+                </parameter>
+        </parameters>
+        <content>
+                <newModuleManifest destination='${PLASTER_PARAM_ModuleName}.psd1' moduleVersion='$PLASTER_PARAM_ModuleVersion' rootModule='${PLASTER_PARAM_ModuleName}.psm1' author='$PLASTER_PARAM_ModuleAuthor' description='$PLASTER_PARAM_ModuleDesc'
 />
-        <templateFile source='template.psm1' destination='${PLASTER_PARAM_ModuleName}.psm1'
+                <templateFile source='template.psm1' destination='${PLASTER_PARAM_ModuleName}.psm1'
 />
-        <message>Creating you folders for module: </message>
-        <file source='' destination='Public\' condition='$PLASTER_PARAM_FunctionFolders -contains "Public"'
+                <message>Creating you folders for module: </message>
+                <file source='' destination='Public\' condition='$PLASTER_PARAM_FunctionFolders -contains "Public"'
 />
-        <file source='' destination='Internal\' condition='$PLASTER_PARAM_FunctionFolders -contains "Internal"'
+                <file source='' destination='Internal\' condition='$PLASTER_PARAM_FunctionFolders -contains "Internal"'
 />
-        <file source='' destination='Classes\' condition='$PLASTER_PARAM_FunctionFolders -contains "Classes"'
+                <file source='' destination='Classes\' condition='$PLASTER_PARAM_FunctionFolders -contains "Classes"'
 />
-        <file source='' destination='Binaries\' condition='$PLASTER_PARAM_FunctionFolders -contains "Binaries"'
+                <file source='' destination='Binaries\' condition='$PLASTER_PARAM_FunctionFolders -contains "Binaries"'
 />
-        <file source='' destination='Data\' condition='$PLASTER_PARAM_FunctionFolders -contains "Data"'
+                <file source='' destination='Data\' condition='$PLASTER_PARAM_FunctionFolders -contains "Data"'
 />
-        <message condition='$PLASTER_PARAM_Pester -eq "Yes"'>Creating a Tests folder</message>
-        <requireModule name="Pester" minimumVersion="3.4.0" condition='$PLASTER_PARAM_Pester -eq "Yes"'
+                <message condition='$PLASTER_PARAM_Pester -eq "Yes"'>Creating a Tests folder</message>
+                <requireModule name="Pester" minimumVersion="3.4.0" condition='$PLASTER_PARAM_Pester -eq "Yes"'
 />
-        <file source='' destination='Tests\' condition='$PLASTER_PARAM_Pester -eq "Yes"'
+                <file source='' destination='Tests\' condition='$PLASTER_PARAM_Pester -eq "Yes"'
 />
-        <file source='basicTest.ps1' destination='Tests\${PLASTER_PARAM_ModuleName}.tests.ps1' condition='$PLASTER_PARAM_Pester -eq "Yes"'
+                <file source='basicTest.ps1' destination='Tests\${PLASTER_PARAM_ModuleName}.tests.ps1' condition='$PLASTER_PARAM_Pester -eq "Yes"'
 />
-        <file source='.gitignore' destination='.gitignore' condition='$PlASTER_PARAM_Git -eq "Yes"'
+                <file source='.gitignore' destination='.gitignore' condition='$PlASTER_PARAM_Git -eq "Yes"'
 />
-        <file source='default.build.ps1' destination='${PLASTER_PARAM_ModuleName}.build.ps1' condition='$PLASTER_PARAM_InvokeBuild -eq "Yes"'
+                <templateFile source='default.build.ps1' destination='${PLASTER_PARAM_ModuleName}.build.ps1' condition='$PLASTER_PARAM_InvokeBuild -eq "Yes"'
 />
-        <requireModule name="InvokeBuild" condition='$PLASTER_PARAM_InvokeBuild -eq "Yes"'
+                <requireModule name="InvokeBuild" condition='$PLASTER_PARAM_InvokeBuild -eq "Yes"'
 />
-        <requireModule name="PSGraph" condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
+                <requireModule name="PSGraph" condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
 />
-        <file source='' destination='Graphs' condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
+                <file source='' destination='Graphs' condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
 />
-        <file source='CommandFlow.ps1' destination='Graphs\CommandFlow.ps1' condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
+                <file source='CommandFlow.ps1' destination='Graphs\CommandFlow.ps1' condition='$PLASTER_PARAM_Graphiz -eq "Yes"'
 />
-    </content>
+        </content>
 </plasterManifest>

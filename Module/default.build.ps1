@@ -1,5 +1,24 @@
-task . Clean, Build, Tests, GenerateGraph
-task Tests ImportCompipledModule, Pester
+<%
+    $buildParams = @("task . Clean", "Build")
+    if ($PLASTER_PARAM_Pester -eq "Yes")
+    {
+        $buildParams += "Tests"
+    }
+
+    if ($PLASTER_PARAM_Graphiz -eq "Yes")
+    {
+        $buildParams += "GenerateGraph"
+    }
+
+    $buildParams -join ", "
+%>
+<%
+    if ($PLASTER_PARAM_Pester -eq "Yes")
+    {
+        "task Tests ImportCompipledModule, Pester"
+    }
+    
+%>
 task CreateManifest copyPSD,UpdatPublicFunctionsToExport, UpdateDSCResourceToExport
 task Build Compile, CreateManifest
 
@@ -95,11 +114,19 @@ task ImportCompipledModule {
     Import-Module -Name $script:PsdPath -Force
 }
 
+<%
+
+    if ($PLASTER_PARAM_Pester -eq "Yes")
+    {
+        @'
 task Pester {
     $resultFile = "{0}\testResults{1}.xml" -f $script:OutPutFolder, (Get-date -Format 'yyyyMMdd_hhmmss')
     $testFolder = Join-Path -Path $PSScriptRoot -ChildPath 'Tests\*'
     Invoke-Pester -Path $testFolder -OutputFile $resultFile -OutputFormat NUnitxml
 }
+'@
+    }
+%>
 
 task GenerateGraph -if (Test-Path -Path 'Graphs') {
     $Graphs = Get-ChildItem -Path "Graphs\*"
