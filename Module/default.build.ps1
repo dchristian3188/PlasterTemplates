@@ -139,6 +139,10 @@ task UpdatPublicFunctionsToExport -if (Test-Path -Path $script:PublicFolder) {
         Set-Content -Path $script:PsdPath
 }
 
+<%
+    if ($PLASTER_PARAM_FunctionFolders -contains 'DSCResources')
+    {
+        @'
 task UpdateDSCResourceToExport -if (Test-Path -Path $script:DSCResourceFolder) {
     $resources = (Get-ChildItem -Path $script:DSCResourceFolder |
             Select-Object -ExpandProperty BaseName) -join "', '"
@@ -146,8 +150,11 @@ task UpdateDSCResourceToExport -if (Test-Path -Path $script:DSCResourceFolder) {
     $resources = "'{0}'" -f $resources
 
     (Get-Content -Path $script:PsdPath) -replace "'_ResourcesToExport_'", $resources |
-        Set-Content -Path $script:PsdPath
-}
+        Set-Content -Path $script:PsdPath   
+}     
+'@
+    }
+%>
 
 task ImportCompipledModule -if (Test-Path -Path $script:PsmPath) {
     Get-Module -Name $script:ModuleName |
@@ -155,21 +162,36 @@ task ImportCompipledModule -if (Test-Path -Path $script:PsmPath) {
     Import-Module -Name $script:PsdPath -Force
 }
 
+<%
+    if ($PLASTER_PARAM_Pester -eq "Yes")
+    {
+        @'
 task Pester {
     $resultFile = "{0}\testResults{1}.xml" -f $script:OutPutFolder, (Get-date -Format 'yyyyMMdd_hhmmss')
     $testFolder = Join-Path -Path $PSScriptRoot -ChildPath 'Tests\*'
     Invoke-Pester -Path $testFolder -OutputFile $resultFile -OutputFormat NUnitxml
-}
+}     
+'@
+    }
+%>
 
+<%
+    if ($PLASTER_PARAM_PSGraph -eq "Yes")
+    {
+        @'
 task GenerateGraph -if (Test-Path -Path 'Graphs') {
     $Graphs = Get-ChildItem -Path "Graphs\*"
-   
+    
     Foreach ($graph in $Graphs)
     {
         $graphLocation = [IO.Path]::Combine($script:OutPutFolder, $script:ModuleName, "$($graph.BaseName).png")
         . $graph.FullName -DestinationPath $graphLocation -Hide
     }
-}
+}     
+'@
+    }
+%>
+
 
 task RemoveStats -if (Test-Path -Path "$($script:OutPutFolder)\stats.json") {
     Remove-Item -Force -Verbose -Path "$($script:OutPutFolder)\stats.json" 
@@ -192,6 +214,13 @@ task WriteStats {
     $stats | ConvertTo-Json > "$script:OutPutFolder\stats.json"
 }
 
+<%
+    if ($PLASTER_PARAM_PlatyPS -eq "Yes")
+    {
+        @'
 task ExportHelp -if (Test-Path -Path "$script:ModuleRoot\Help") {
     New-ExternalHelp -Path "$script:ModuleRoot\Help" -OutputPath $script:HelpPath
 }
+'@
+    }
+%>
