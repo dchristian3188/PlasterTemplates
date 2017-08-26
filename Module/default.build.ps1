@@ -26,7 +26,14 @@
     }
     
 %>
-task CreateManifest copyPSD,UpdatPublicFunctionsToExport, UpdateDSCResourceToExport
+<%
+    $tasks = @("task CreateManifest CopyPSD, UpdatPublicFunctionsToExport")
+    if ($PLASTER_PARAM_FunctionFolders -contains 'DSCResources')
+    {
+        $tasks += "UpdateDSCResourceToExport"
+    }
+    ($tasks -join ", ")
+%>
 task Build Compile, CreateManifest
 task Stats RemoveStats, WriteStats
 
